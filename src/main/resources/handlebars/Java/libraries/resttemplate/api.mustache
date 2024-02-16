@@ -102,12 +102,18 @@ public class {{classname}} {
     public ResponseEntity<{{#returnType}}{{{returnType}}}{{/returnType}}{{^returnType}}Void{{/returnType}}> {{operationId}}WithHttpInfo({{#parameters}}{{{dataType}}} {{paramName}}{{#hasMore}}, {{/hasMore}}{{/parameters}}) throws RestClientException {
         Object {{localVariablePrefix}}postBody = {{^isForm}}{{#bodyParam}}{{paramName}}{{/bodyParam}}{{^bodyParam}}null{{/bodyParam}}{{/isForm}}{{#isForm}}null{{/isForm}};
         {{#parameters}}
-        {{#required}}
+        {{#if required}}
         // verify the required parameter '{{paramName}}' is set
         if ({{paramName}} == null) {
             throw new HttpClientErrorException(HttpStatus.BAD_REQUEST, "Missing the required parameter '{{paramName}}' when calling {{operationId}}");
         }
-        {{/required}}
+        {{else}}
+        {{#defaultValue}}
+        if ({{paramName}} == null) {
+            {{paramName}} = "{{{.}}}";
+        }
+        {{/defaultValue}}
+        {{/if}}
         {{/parameters}}
         {{#hasPathParams}}
         // create path and map variables
